@@ -104,7 +104,7 @@ class RenrenParser:
 		try:
 			n=cur.execute(sql)
 			conn.commit()
-		except Exception as e:
+		except Exception:
 			print('error. filename={}'.format(filename))
 			print(sql)
 			n=0
@@ -121,15 +121,15 @@ class RenrenParser:
 			for page in os.listdir(pwd):
 				try:
 					self.statusPage(pwd+page,renrenId)
-				except Exception as e:
+				except Exception:
 					print('error. filename={}'.format(page))
 
 	def friends(self):
 		cnt = 0
-		for renrenId in os.listdir(self.browser.getPwdFriendPage()):
+		for renrenId in os.listdir(self.browser.getPWDFriendPage()):
 			print("parsing {}: {}".format(cnt, renrenId));
 			cnt = cnt+1
-			pwd = self.browser.getPwdFriendPage()+'/'+renrenId+'/'
+			pwd = self.browser.getPWDFriendPage()+'/'+renrenId+'/'
 			#parsered pages and assign to flist 
 			pages = os.listdir(pwd)
 			flist = set()

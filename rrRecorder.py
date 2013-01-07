@@ -1,6 +1,8 @@
 import pickle
 
 
+# relation.p里面是一个dictionary，key是renrenID，value是该renrenID的好友的renrenID集合（一个set）
+# profile.p里面也是一个dictionary，key是renrenID，value是对应显示的名字
 class RenrenRecorder:
     
     def load(self, path):

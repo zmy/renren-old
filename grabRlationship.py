@@ -19,7 +19,7 @@ parser = RenrenParser(browser, recorder)
 #print(len(recorder.getFriends(rrID)))
 
 #net1
-browser.friendListPage(rrID)
+browser.grabFriendListPages(rrID)
 parser.friends()
 recorder.save()
 
@@ -27,10 +27,10 @@ recorder.save()
 #flist = db.getRenrenId(2, rrID)
 myFriends = recorder.getFriends(rrID)
 cnt = 0
-for myFriend in myFriends:
+for rrID in myFriends:
     #loopStart=time.time()
-    browser.friendListPage(myFriend)
-    print("{}: {}'s friendship grabbed".format(cnt, myFriend))
+    browser.grabFriendListPages(rrID)
+    print("{}: {}'s friendship grabbed".format(cnt, rrID))
     cnt = cnt+1
     #loopEnd=time.time()
     #if (loopEnd-loopStart<10):
