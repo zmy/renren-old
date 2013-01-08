@@ -14,6 +14,7 @@ class RenrenRecorder:
     def load(self, path):
         self.relationPath = path+'/relation.p'
         self.namePath = path+'/name.p'
+        self.profilePath = path+'/profile.p'
         try:
             self.relation = pickle.load(open(self.relationPath, 'rb'))
         except FileNotFoundError:
@@ -22,10 +23,15 @@ class RenrenRecorder:
             self.name = pickle.load(open(self.namePath, 'rb'))
         except FileNotFoundError:
             self.name = {}
+        try:
+            self.profile = pickle.load(open(self.profilePath, 'rb'))
+        except FileNotFoundError:
+            self.profile = {}
 
     def save(self):
         pickle.dump(self.relation, open(self.relationPath, 'wb'))
         pickle.dump(self.name, open(self.namePath, 'wb'))
+        pickle.dump(self.profile, open(self.profilePath, 'wb'))
 
     def addNames(self, nameList):
         self.profile.update(nameList)
@@ -33,15 +39,15 @@ class RenrenRecorder:
     def getNames(self):
         return self.name
 
-    def addFriends(self, renrenId, friendList):
-        if renrenId in self.relation:
-            self.relation[renrenId] = self.relation[renrenId] | friendList
+    def addFriends(self, rrID, friendList):
+        if rrID in self.relation:
+            self.relation[rrID] = self.relation[rrID] | friendList
         else:
-            self.relation[renrenId] = friendList
+            self.relation[rrID] = friendList
 
-    def getFriends(self, renrenId):
-        if renrenId in self.relation:
-            return self.relation[renrenId]
+    def getFriends(self, rrID):
+        if rrID in self.relation:
+            return self.relation[rrID]
         else:
             return {}
 
@@ -51,3 +57,6 @@ class RenrenRecorder:
 
     def getRelations(self):
         return self.relation
+
+    def setProfile(self, rrID, profile):
+        self.profile[rrID] = profile

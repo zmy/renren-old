@@ -25,6 +25,10 @@ class RenrenBrowser:
 	def getPWDProfilePage(self):
 		return self.pwdRoot+'/profile'
 
+	def extractProfileID(self, filename):
+		m = re.search(r'profile_(\d+).html', filename)
+		return m.group(1)
+
 	# renren has the maximum friend number of 7000
 	def grabFriendListPages(self, rrID, pagelimit=400):
 		self.iterPages('friendList', rrID, pagelimit)

@@ -2,15 +2,26 @@ import re
 import time
 import logging
 import os
+from html.parser import HTMLParser
 from rrDB import RenrenDb
 from rrBrowser import RenrenBrowser
 
+
+class InfoParser(HTMLParser):
+	data = ''
+	def handle_starttag(self, tag, attrs):
+		if tag=='br':
+			self.data = self.data+'\n'
+	def handle_endtag(self, tag):
+		pass
+	def handle_data(self, data):
+		self.data = self.data+' '+data.strip()
 
 class RenrenParser:
 	def __init__(self, browser, recorder=None):
 		#self.log=self.initLogger()
 		self.browser = browser
-		self.recorder = recorder;
+		self.recorder = recorder
 
 	def friendPage(self, filename):
 		#open and read 
@@ -71,7 +82,7 @@ class RenrenParser:
 				cur.close()
 				conn.close()
 			else:
-				self.recorder.addProfile(flist)
+				self.recorder.setProfile(flist)
 				friends = set()
 				for pair in flist:
 					friends = friends | {str(pair[0])}
@@ -83,8 +94,36 @@ class RenrenParser:
 				os.rename(pwd+old, pwd+new)
 
 	def profiles(self):
-		cnt = 0
-		
+		for filename in os.listdir(self.browser.getPWDProfilePage()):
+			rrID = self.browser.extractProfileID(filename)
+			#print(filename, rrID)
+			f = open(self.browser.getPWDProfilePage()+'/'+filename, 'r', encoding='utf-8')
+			htmlStr = str(f.read())
+			f.close()
+			htmlStr = re.sub(r'<script>.*?</script>', '', htmlStr, 0, re.DOTALL)
+			htmlStr = re.sub(r'</dt>\s*<dd>', '</dt><dd>', htmlStr)
+			htmlStr = re.sub(r'</dt>(?!<dd>)', '</dt><dd></dd>', htmlStr)
+			profile = {}
+			infos = re.findall(r'<dt>(.+?)</dt>\s*<dd>(.*?)</dd>', htmlStr, re.DOTALL)
+			company = ''
+			for info in infos:
+				key = re.sub(r'[:\s]', '', info[0]).strip()
+				parser = InfoParser()
+				parser.feed(info[1])
+				parser.close()
+				value = parser.data.strip()
+				if key.encode('utf-8')=='公司'.encode('utf-8'):
+					company = value
+				else:
+					if key.encode('utf-8')=='时间'.encode('utf-8'):
+						if '工作信息' in profile:
+							profile['工作信息'].append({'公司':company, '时间':value})
+						else:
+							profile['工作信息'] = [{'公司':company, '时间':value}]
+					else:
+						profile[key] = value
+			#print(profile)
+			self.recorder.setProfile(rrID, profile)
 
 	def statusPage(self,filename,mainId=None):
 		#open and read 

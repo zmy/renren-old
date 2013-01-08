@@ -22,7 +22,8 @@ friends = mergedRec.getFriends(rrID)
 for rrID in friends:
     cnt += 1
     result = browser.grabProfilePage(rrID)
-    print('√ {}/{}: {} {}'.format(rrID, cnt, len(friends), result))
+    print('√ {}: {}/{} {}'.format(rrID, cnt, len(friends), result))
     time.sleep(5)
 
 parser.profiles()
+mergedRec.save()
