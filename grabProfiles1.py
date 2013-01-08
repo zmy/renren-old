@@ -23,7 +23,8 @@ for rrID in friends:
     cnt += 1
     result = browser.grabProfilePage(rrID)
     print('√ {}: {}/{} {}'.format(rrID, cnt, len(friends), result))
-    time.sleep(5)
+    if result!='skipped':
+        time.sleep(10)
 
 parser.profiles()
 mergedRec.save()
