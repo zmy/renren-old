@@ -1,4 +1,4 @@
-import urllib.request as http#instead of urllib2
+import urllib.request as http #instead of urllib2
 import urllib.parse #urlencode is used
 import http.cookiejar as cookie
 import re
@@ -15,20 +15,20 @@ class RenrenBrowser:
 		self.log = self.initLogger()
 		self.user = user
 		self.passwd = passwd
-	
+
 	def getPWDRoot(self):
 		return self.pwdRoot
-	
+
 	def getPWDFriendPage(self):
 		return self.pwdRoot+'/friendList'
-	
+
 	def getPWDProfilePage(self):
 		return self.pwdRoot+'/profile'
 
 	# renren has the maximum friend number of 7000
 	def grabFriendListPages(self, rrID, pagelimit=400):
 		self.iterPages('friendList', rrID, pagelimit)
-	
+
 	def grabStatusPages(self, rrID=None, pagelimit=100):
 		self.iterPages('status', rrID, pagelimit)
 
@@ -40,7 +40,7 @@ class RenrenBrowser:
 		'status':'id="status-',
 		'friendList':'class="info"'}
 	filenameTemplate = '{}{}_{}.html' #pageStyle, renrenId, page
-	
+
 	def iterPages(self, pageStyle=None, rrID=None, pagelimit=100):
 		pwd = self.pwdRoot+'/{}/{}'.format(pageStyle, rrID)
 
@@ -137,8 +137,8 @@ class RenrenBrowser:
 		logger.addHandler(hdlr)
 		logger.setLevel(20)#info
 		return logger
-	
+
 	def setLogLevel(self,level):
 		oldLevel=self.log.getEffectiveLevel()
-		self.log.setLevel(level)#info 20, debug 10
+		self.log.setLevel(level) #info 20, debug 10
 		self.log.info("log level chanaged, from {} to {}".format(oldLevel,level))

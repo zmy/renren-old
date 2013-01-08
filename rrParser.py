@@ -25,7 +25,66 @@ class RenrenParser:
 			name = re.compile(r'>[^<]+<').findall(item)[0].strip('<>')
 			pairs.add((renrenId, name))
 		return pairs
+
+	def friends(self):
+		cnt = 0
+		for renrenId in os.listdir(self.browser.getPWDFriendPage()):
+			print("parsing {}: {}".format(cnt, renrenId));
+			cnt = cnt+1
+			pwd = self.browser.getPWDFriendPage()+'/'+renrenId+'/'
+			#parsered pages and assign to flist 
+			pages = os.listdir(pwd)
+			flist = set()
+			#files that parsering, store for rename later
+			parsering = []
+			for page in pages:
+				if page.find('parsered_')==0:
+					#file parserd, continue
+					continue
+				else:
+					parsering.append(page)
+					flist = flist| self.friendPage(pwd+page)
+
+			if len(pages)==0:
+				#if empty, mkdir flag file and assign 1 to flist
+				open(pwd+'parsered_{}_noPermision.html'.format(renrenId)).close()
+				#os.mknod(pwd+'parsered_{}_noPermision.html'.format(renrenId))
+				flist = {('1', 'unavailable')}
+			elif len(flist)==0:
+				#all files parser, continue
+				continue
+			#else:
+			if self.recorder==None:
+				#insert into table, pairs>temp_profile, relation>temp_relation
+				db = RenrenDb()
+				sqlProfile = 'insert into {} (renrenId,name) values {}'.format(db.temp_profile, str(flist).strip('{}'))
+				relation = ''
+				for pair in flist:
+					relation = relation+'({},{}),'.format(renrenId, str(pair[0]))
+				sqlRelation = 'insert into {} (renrenId1,renrenId2) values {}'.format(db.temp_relation, relation.strip(','))
+				conn = db.getConn()
+				cur = conn.cursor()
+				m = cur.execute(sqlProfile)
+				n = cur.execute(sqlRelation)
+				#self.log.info('{} profiles and {} relations of {} inserted into db'.format(m,n,renrenId))
+				conn.commit()
+				cur.close()
+				conn.close()
+			else:
+				self.recorder.addProfile(flist)
+				friends = set()
+				for pair in flist:
+					friends = friends | {str(pair[0])}
+				self.recorder.addRelation(renrenId, friends)
+			
+			#rename parsering files
+			for old in parsering:
+				new = 'parsered_'+old
+				os.rename(pwd+old, pwd+new)
 	
+	def profiles(self):
+		cnt = 0
+
 	def statusPage(self,filename,mainId=None):
 		#open and read 
 		f=open(filename, 'r', encoding='utf-8')
@@ -123,62 +182,6 @@ class RenrenParser:
 					self.statusPage(pwd+page,renrenId)
 				except Exception:
 					print('error. filename={}'.format(page))
-
-	def friends(self):
-		cnt = 0
-		for renrenId in os.listdir(self.browser.getPWDFriendPage()):
-			print("parsing {}: {}".format(cnt, renrenId));
-			cnt = cnt+1
-			pwd = self.browser.getPWDFriendPage()+'/'+renrenId+'/'
-			#parsered pages and assign to flist 
-			pages = os.listdir(pwd)
-			flist = set()
-			#files that parsering, store for rename later
-			parsering = []
-			for page in pages:
-				if page.find('parsered_')==0:
-					#file parserd, continue
-					continue
-				else:
-					parsering.append(page)
-					flist = flist| self.friendPage(pwd+page)
-
-			if len(pages)==0:
-				#if empty, mkdir flag file and assign 1 to flist
-				open(pwd+'parsered_{}_noPermision.html'.format(renrenId)).close()
-				#os.mknod(pwd+'parsered_{}_noPermision.html'.format(renrenId))
-				flist = {('1', 'unavailable')}
-			elif len(flist)==0:
-				#all files parser, continue
-				continue
-			#else:
-			if self.recorder==None:
-				#insert into table, pairs>temp_profile, relation>temp_relation
-				db = RenrenDb()
-				sqlProfile = 'insert into {} (renrenId,name) values {}'.format(db.temp_profile, str(flist).strip('{}'))
-				relation = ''
-				for pair in flist:
-					relation = relation+'({},{}),'.format(renrenId, str(pair[0]))
-				sqlRelation = 'insert into {} (renrenId1,renrenId2) values {}'.format(db.temp_relation, relation.strip(','))
-				conn = db.getConn()
-				cur = conn.cursor()
-				m = cur.execute(sqlProfile)
-				n = cur.execute(sqlRelation)
-				#self.log.info('{} profiles and {} relations of {} inserted into db'.format(m,n,renrenId))
-				conn.commit()
-				cur.close()
-				conn.close()
-			else:
-				self.recorder.addProfile(flist)
-				friends = set()
-				for pair in flist:
-					friends = friends | {str(pair[0])}
-				self.recorder.addRelation(renrenId, friends)
-			
-			#rename parsering files
-			for old in parsering:
-				new = 'parsered_'+old
-				os.rename(pwd+old, pwd+new)
 
 	def initLogger(self):
 		#init pwd to write

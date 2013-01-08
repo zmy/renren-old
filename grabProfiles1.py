@@ -1,3 +1,4 @@
+# This script grabs profiles of the direct friends of the input user
 from rrBrowser import RenrenBrowser
 from rrParser import RenrenParser
 from rrRecorder import RenrenRecorder
@@ -16,6 +17,6 @@ mergedRec = RenrenRecorder(path=storePath, writeBack=True)
 parser = RenrenParser(browser, mergedRec)
 
 #TODO: add frequency limit
-for rrID in mergedRec.getProfileList().keys():
-    browser.grabProfilePage(rrID)
+for friendID in mergedRec.getFriends(rrID):
+    browser.grabProfilePage(friendID)
 
