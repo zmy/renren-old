@@ -7,10 +7,10 @@ class RenrenRecorder:
     def __init__(self, path, writeBack=False):
         self.load(path)
         self.writeBack = writeBack
-    
+
     def __del__(self):
         if self.writeBack: self.save()
-    
+
     def load(self, path):
         self.relationPath = path+'/relation.p'
         self.namePath = path+'/name.p'
@@ -22,32 +22,32 @@ class RenrenRecorder:
             self.name = pickle.load(open(self.namePath, 'rb'))
         except FileNotFoundError:
             self.name = {}
-    
+
     def save(self):
         pickle.dump(self.relation, open(self.relationPath, 'wb'))
         pickle.dump(self.name, open(self.namePath, 'wb'))
-    
+
+    def addNames(self, nameList):
+        self.profile.update(nameList)
+
     def getNames(self):
         return self.name
-    
-    def getRelationList(self):
-        return self.relation
-    
+
+    def addFriends(self, renrenId, friendList):
+        if renrenId in self.relation:
+            self.relation[renrenId] = self.relation[renrenId] | friendList
+        else:
+            self.relation[renrenId] = friendList
+
     def getFriends(self, renrenId):
         if renrenId in self.relation:
             return self.relation[renrenId]
         else:
             return {}
-    
-    def addRelation(self, renrenId, friendList):
-        if renrenId in self.relation:
-            self.relation[renrenId] = self.relation[renrenId] | friendList
-        else:
-            self.relation[renrenId] = friendList
-    
-    def mergeRelation(self, relationList):
+
+    def addRelations(self, relationList):
         for renrenId in relationList.keys():
-            self.addRelation(renrenId, relationList[renrenId])
-    
-    def addName(self, profileList):
-        self.profile.update(profileList)
+            self.addFriends(renrenId, relationList[renrenId])
+
+    def getRelations(self):
+        return self.relation

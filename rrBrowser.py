@@ -74,23 +74,28 @@ class RenrenBrowser:
 				f.close()
 
 	def grabProfilePage(self, rrID):
-		#sending request and decode response
-		self.log.debug("requesting detail profile, renrenID={}".format(rrID))
-		rsp = self.opener.open(self.urlTemplate['profile'].format(rrID))
-		self.log.debug("detail profile recieved, renrenID={}".format(rrID))
-		htmlStr = rsp.read().decode('UTF-8', 'ignore')
 		#init pwd to write
 		pwd = self.getPWDProfilePage()
 		if not os.path.exists(pwd):
 			os.makedirs(pwd)
 			self.log.debug("mkdir {}".format(pwd))
-		#write to file
 		filenameTemplate = 'profile_{}.html'#id
 		filename = pwd+'/'+filenameTemplate.format(rrID)
-		f = open(filename, 'w', encoding='utf-8')
-		f.write(htmlStr)
-		f.close()
-		self.log.debug("detail profile write to file, file={}".format(filename))
+		if os.path.exists(filename):
+			self.log.debug("skip profile, renrenID={}".format(rrID))
+			return 'skipped'
+		else:
+			#sending request and decode response
+			self.log.debug("requesting detail profile, renrenID={}".format(rrID))
+			rsp = self.opener.open(self.urlTemplate['profile'].format(rrID))
+			self.log.debug("detail profile recieved, renrenID={}".format(rrID))
+			htmlStr = rsp.read().decode('UTF-8', 'ignore')
+			#write to file
+			f = open(filename, 'w', encoding='utf-8')
+			f.write(htmlStr)
+			f.close()
+			self.log.debug("detail profile write to file, file={}".format(filename))
+			return 'grabbed'
 
 	def login(self):
 		user = self.user;

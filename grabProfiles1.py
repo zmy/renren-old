@@ -1,4 +1,5 @@
 # This script grabs profiles of the direct friends of the input user
+import time
 from rrBrowser import RenrenBrowser
 from rrParser import RenrenParser
 from rrRecorder import RenrenRecorder
@@ -16,7 +17,12 @@ browser.login()
 mergedRec = RenrenRecorder(path=storePath, writeBack=True)
 parser = RenrenParser(browser, mergedRec)
 
-#TODO: add frequency limit
-for friendID in mergedRec.getFriends(rrID):
-    browser.grabProfilePage(friendID)
+cnt = 0
+friends = mergedRec.getFriends(rrID)
+for rrID in friends:
+    cnt += 1
+    result = browser.grabProfilePage(rrID)
+    print('√ {}/{}: {} {}'.format(rrID, cnt, len(friends), result))
+    time.sleep(5)
 
+parser.profiles()

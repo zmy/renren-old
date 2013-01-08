@@ -75,15 +75,16 @@ class RenrenParser:
 				friends = set()
 				for pair in flist:
 					friends = friends | {str(pair[0])}
-				self.recorder.addRelation(renrenId, friends)
+				self.recorder.addFriends(renrenId, friends)
 			
 			#rename parsering files
 			for old in parsering:
 				new = 'parsered_'+old
 				os.rename(pwd+old, pwd+new)
-	
+
 	def profiles(self):
 		cnt = 0
+		
 
 	def statusPage(self,filename,mainId=None):
 		#open and read 
