@@ -85,6 +85,7 @@ class RenrenBrowser:
 			self.log.debug("mkdir {}".format(pwd))
 		filenameTemplate = 'profile_{}.html'#id
 		filename = pwd+'/'+filenameTemplate.format(rrID)
+		#TODO: deal with wrong local pages
 		if os.path.exists(filename):
 			self.log.debug("skip profile, renrenID={}".format(rrID))
 			return 'skipped'
