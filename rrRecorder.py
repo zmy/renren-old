@@ -34,7 +34,7 @@ class RenrenRecorder:
         pickle.dump(self.profile, open(self.profilePath, 'wb'))
 
     def addNames(self, nameList):
-        self.profile.update(nameList)
+        self.name.update(nameList)
 
     def getNames(self):
         return self.name
