@@ -82,7 +82,7 @@ class RenrenParser:
 				cur.close()
 				conn.close()
 			else:
-				self.recorder.setProfile(flist)
+				self.recorder.addNames(flist)
 				friends = set()
 				for pair in flist:
 					friends = friends | {str(pair[0])}
