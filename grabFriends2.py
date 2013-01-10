@@ -1,8 +1,8 @@
 #import time
-from rrBrowser import RenrenBrowser
-from rrParser import RenrenParser
+from RRBrowser import RenrenBrowser
+from RRParser import RenrenParser
 #from rrDB import RenrenDb
-from rrRecorder import RenrenRecorder
+from RRRecorder import RenrenRecorder
 
 
 storePath = 'D:/Projects/NetSci/U&I/data'

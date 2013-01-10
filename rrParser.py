@@ -3,8 +3,8 @@ import time
 import logging
 import os
 from html.parser import HTMLParser
-from rrDB import RenrenDb
-from rrBrowser import RenrenBrowser
+from RRDB import RenrenDb
+from RRBrowser import RenrenBrowser
 
 
 class InfoParser(HTMLParser):

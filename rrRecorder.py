@@ -60,3 +60,6 @@ class RenrenRecorder:
 
     def setProfile(self, rrID, profile):
         self.profile[rrID] = profile
+
+    def getProfiles(self):
+        return self.profile

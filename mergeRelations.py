@@ -1,5 +1,5 @@
 import os
-from rrRecorder import RenrenRecorder
+from RRRecorder import RenrenRecorder
 
 
 storePath = 'D:/Projects/NetSci/U&I/data'

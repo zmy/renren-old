@@ -1,9 +1,9 @@
 # This script grabs profiles of the direct friends of the input user
 # You should only run this script after successfully running mergeRelations.py
 import time
-from rrBrowser import RenrenBrowser
-from rrParser import RenrenParser
-from rrRecorder import RenrenRecorder
+from RRBrowser import RenrenBrowser
+from RRParser import RenrenParser
+from RRRecorder import RenrenRecorder
 
 
 storePath = 'D:/Projects/NetSci/U&I/data'
